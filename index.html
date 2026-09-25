@@ -9,8 +9,17 @@ body{margin:0;background:var(--bg);color:var(--txt);font:17px/1.45 -apple-system
 main{max-width:640px;margin:0 auto;padding:22px 16px 40px}
 h1{font-size:1.5rem;margin:.2em 0}.sub{color:var(--dim);font-size:.92rem}
 a.card{display:block;text-decoration:none;color:inherit;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin:14px 0}
-a.card:first-of-type{border-color:var(--acc)}a.card b{font-size:1.1rem}
+a.card.fc{border-color:var(--acc)}a.card b{font-size:1.1rem}
 </style></head><body><main>
-<h1>Studiequiz</h1><div class="sub">Ugentlige quizzer i pensum · statskundskab, KU</div>
+<h1>Studiequiz</h1><div class="sub">Quizzer og flashcards i pensum · statskundskab, KU</div>
+<a class="card fc" href="kort.html"><b>Flashcards · hele semesteret</b><div class="sub" id="due">Spaced repetition – husk alle tekster til eksamen</div></a>
+<h2 class="sub" style="margin-top:22px">Ugens quizzer</h2>
 <a class="card" href="2026e-uge-04.html"><b>Quiz · uge 4</b><div class="sub">Session 4 · 21.–25. september 2026 · DAK3, EP, PA · 104 spørgsmål</div></a>
+<script>
+try {
+  const s = JSON.parse(localStorage.getItem("kort:2026E") || "{}"), now = Date.now();
+  const due = Object.values(s.c || {}).filter(c => c.d <= now).length;
+  if (s.c) document.getElementById("due").textContent = due + " kort til gentagelse i dag · " + Object.keys(s.c).length + " påbegyndt";
+} catch (e) {}
+</script>
 </main></body></html>

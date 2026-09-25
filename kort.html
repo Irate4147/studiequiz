@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="da">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#16141c">
+<title>Flashcards</title>
+<style>
+:root{--bg:#16141c;--card:#211e2b;--card2:#2a2636;--line:#363046;--txt:#ece9f3;--dim:#a39dba;--acc:#8b6cef;--acc2:#a78bfa;--ok:#3fb67d;--bad:#e5566b;--warn:#e0a84f}
+@media (prefers-color-scheme:light){:root{--bg:#f6f5fa;--card:#fff;--card2:#f1eff8;--line:#e0dcee;--txt:#1d1a26;--dim:#6b6680;--acc2:#6d4fd8}}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--txt);font:17px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,sans-serif}
+main{max-width:640px;margin:0 auto;padding:18px 16px calc(120px + env(safe-area-inset-bottom))}
+h1{font-size:1.45rem;margin:.2em 0 .1em}
+h2{font-size:1.1rem;margin:0 0 6px}
+h3{font-size:.98rem;margin:14px 0 4px;color:var(--acc2)}
+a{color:var(--acc2)}
+.sub{color:var(--dim);font-size:.92rem}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin:14px 0}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.spread{justify-content:space-between}
+button{font:inherit;color:inherit;border:0;cursor:pointer}
+.btn{background:var(--acc);color:#fff;border-radius:12px;padding:13px 18px;font-weight:600;width:100%;font-size:1rem}
+.btn.ghost{background:var(--card2);color:var(--txt);border:1px solid var(--line)}
+.btn:disabled{opacity:.4}
+.seg{display:flex;background:var(--card2);border-radius:10px;padding:3px;border:1px solid var(--line);margin:6px 0}
+.seg button{flex:1;padding:8px 6px;border-radius:8px;background:none;font-size:.88rem;color:var(--dim)}
+.seg button.on{background:var(--acc);color:#fff}
+.lbl{font-size:.8rem;color:var(--dim);margin-top:10px}
+.chip{display:inline-block;font-size:.75rem;padding:2px 8px;border-radius:99px;background:var(--card2);border:1px solid var(--line);color:var(--dim)}
+.chip.acc{background:var(--acc);border-color:var(--acc);color:#fff}
+.chip.arg{border-color:var(--acc);color:var(--acc2);font-weight:600}
+.stats{display:flex;gap:10px;margin:12px 0}
+.stat{flex:1;background:var(--card2);border-radius:12px;padding:10px;text-align:center}
+.stat b{display:block;font-size:1.5rem}
+.stat span{font-size:.78rem;color:var(--dim)}
+.bar{height:6px;background:var(--card2);border-radius:99px;overflow:hidden;margin:8px 0 14px}
+.bar i{display:block;height:100%;background:var(--acc)}
+.flash{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px 18px;min-height:46vh;display:flex;flex-direction:column;cursor:pointer}
+.front{font-size:1.2rem;font-weight:700;line-height:1.35}
+.back{margin-top:16px;padding-top:16px;border-top:1px dashed var(--line);white-space:pre-wrap;font-size:1rem}
+.hint{margin-top:auto;padding-top:18px;color:var(--dim);font-size:.85rem;text-align:center}
+.foot{position:fixed;left:0;right:0;bottom:0;padding:12px 16px calc(12px + env(safe-area-inset-bottom));background:linear-gradient(transparent,var(--bg) 30%)}
+.foot .in{max-width:640px;margin:0 auto;display:flex;gap:8px}
+.grade{flex:1;border-radius:12px;padding:10px 4px;font-weight:700;font-size:.92rem;color:#fff;line-height:1.2}
+.grade small{display:block;font-weight:500;font-size:.72rem;opacity:.9}
+.g0{background:var(--bad)}.g1{background:var(--warn)}.g2{background:var(--ok)}.g3{background:var(--acc)}
+.x{background:none;color:var(--dim);font-size:1.4rem;padding:0 4px;line-height:1}
+.link{background:none;color:var(--dim);text-decoration:underline;font-size:.85rem;padding:6px}
+.li{border-top:1px solid var(--line);padding:10px 0}
+.li b{display:block}
+.li div{white-space:pre-wrap;font-size:.93rem;color:var(--dim);margin-top:4px}
+</style>
+</head>
+<body>
+<main id="app"></main>
+<div class="foot" id="foot" hidden><div class="in" id="footin"></div></div>
+<script>
+const DATA = {"semester": "2026E", "uger": [{"uge": 4, "titel": "Quiz · uge 4", "kurser": [{"kode": "DAK3", "navn": "Kolonisering og Mellemøsten", "tekster": [{"id": "hariri", "label": "Hariri 2015"}, {"id": "herb", "label": "Herb 1999"}, {"id": "lange", "label": "Lange 2009 (slides + anmeldelse)"}, {"id": "slides", "label": "Forelæsning F04"}], "kort": [{"kilde": "hariri", "kategori": "argument", "forside": "Hariri (2015): Hovedargument?", "bagside": "Mellemøstens og den muslimske verdens demokratiske underskud er ikke exceptionelt. Det skyldes en generel historisk dynamik: ‘the autocratic legacy of early statehood’. Når lande sammenlignes på førkolonial statsudvikling og europæisk bosættelse, forsvinder underskuddet.", "id": "2026E-04-DAK3-a839fccc"}, {"kilde": "hariri", "kategori": "argument", "forside": "Hariri: Gåden (puzzle)?", "bagside": "MENA og muslimske lande er markant mindre demokratiske, og underskuddet består efter kontrol for modernisering, olie, repressiv kapacitet og kunstige grænser. Ingen teori kan forklare, hvad ved regionen der hæmmer demokrati, og derfor kaldes det ‘exceptionelt’.", "id": "2026E-04-DAK3-baf1d2e3"}, {"kilde": "hariri", "kategori": "argument", "forside": "Hariri: Kausalkæden i to trin?", "bagside": "1) Tidlig førkolonial statsdannelse → modstand mod kolonisering, lidt europæisk bosættelse og, hvis koloniseret, indirekte styre.\n2) Lidt bosættelse og indirekte styre → ringe spredning af europæiske institutioner og idéer, fastfrosne traditionelle hierarkier → autokrati.", "id": "2026E-04-DAK3-d42f5376"}, {"kilde": "hariri", "kategori": "argument", "forside": "Hariri: Forhold til alternative forklaringer (Bellin, islam, olie)?", "bagside": "Han afviser dem ikke. Pointen er, at de ikke har hæmmet demokrati mere end i andre lande med samme statshistorie og samme begrænsede europæiske indflydelse. Han forklarer ikke, hvorfor demokrati ikke opstod endogent i regionen.", "id": "2026E-04-DAK3-3a392f32"}, {"kilde": "hariri", "kategori": "begreb", "forside": "Exceptionalisme (MENA/muslimsk)?", "bagside": "At regionens demokratiske underskud består, selv når der kontrolleres for de kendte forklaringer på demokrati. Underskuddet ‘unddrager sig’ teorierne, så MENA-dummyen forbliver negativ og signifikant.", "id": "2026E-04-DAK3-768e8e77"}, {"kilde": "hariri", "kategori": "teori", "forside": "Hariri: Hvorfor spredte europæisk bosættelse demokrati?", "bagside": "Bosætterne tog institutioner og idéer med og var i ‘communication and communion’ med hjemlandet. De krævede samme rettigheder som landsmændene, oplysningsidéer gennemsyrede samfundet, og de eksperimenterede med repræsentativ regering ved uafhængigheden. Kolonimagterne var ikke selv demokratier.", "id": "2026E-04-DAK3-d69303e5"}, {"kilde": "hariri", "kategori": "teori", "forside": "Hariri: Hvorfor gav defensiv modernisering (fx Tanzimat) ikke samme effekt?", "bagside": "Den var top-down og selektiv og sigtede mod effektiv statsmagt (hær og bureaukrati), ikke mod at begrænse den. Nye institutioner blev lagt oven på de traditionelle, og idéerne nåede kun en snæver elite (‘the French knowers’).", "id": "2026E-04-DAK3-70761842"}, {"kilde": "hariri", "kategori": "teori", "forside": "Hariri: Paradokset i forhold til Europa?", "bagside": "I det tidligt moderne Europa fremmede statsdannelse parlamentariske institutioner (bargaining-modellen). Uden for Europa hæmmede tidlig statsdannelse demokrati.", "id": "2026E-04-DAK3-15fde8c7"}, {"kilde": "hariri", "kategori": "kritik", "forside": "Hariri: Hvad viser Tyrkiet og Algeriet?", "bagside": "At bosættelse hverken er nødvendig eller tilstrækkelig. Tyrkiet blev demokratisk uden bosættelse, fordi Atatürk afskaffede de traditionelle institutioner. Algeriet havde bosættelse, men rettighederne var forbeholdt bosætterne, som forlod landet ved uafhængigheden. Argumentet er probabilistisk.", "id": "2026E-04-DAK3-ec3657fa"}, {"kilde": "hariri", "kategori": "teori", "forside": "Hariri: Empirisk strategi i korte træk?", "bagside": "Tværnational analyse af ikke-europæiske lande. Førkolonial statsudvikling måles med State Antiquity Index og instrumenteres med tidspunktet for den neolitiske revolution, fordi statshistorie er flettet sammen med islams udbredelse. Bosættelse måles som andelen, der taler et europæisk sprog.", "id": "2026E-04-DAK3-ae8548ec"}, {"kilde": "herb", "kategori": "argument", "forside": "Herb (1999): Hovedargument?", "bagside": "Mellemøstlige monarkier overlever, når kongefamilien selv behersker staten som herskende institution (dynastisk monarki). Intet dynastisk monarki er faldet til revolution, mens alle monarkier, der udelukkede familien fra regeringen, er faldet.", "id": "2026E-04-DAK3-45cee30e"}, {"kilde": "herb", "kategori": "argument", "forside": "Herb: Gåden?", "bagside": "Monarkier blev spået en ‘bleak’ fremtid (Huntington), men otte mellemøstlige monarkier overlevede. De oplagte forklaringer, olie (rentier) og uddannelse, kan ikke forklare, hvem der overlevede.", "id": "2026E-04-DAK3-1dea189f"}, {"kilde": "herb", "kategori": "argument", "forside": "Herb: Mekanismen i dynastisk monarki?", "bagside": "Arvefølgen afgøres ved familiekonsensus. Slægtninge på nøgleposter forhandler om magten, og ikke-kandidater bandwagoner i stedet for at balancere, så familien ikke splittes. Paradokset er, at netop konkurrencen om magten skaber og fastholder dynastiets greb om staten.", "id": "2026E-04-DAK3-5f16c19a"}, {"kilde": "herb", "kategori": "begreb", "forside": "Dynastisk monarki (Herb)?", "bagside": "Monarki, hvor kongefamilien monopoliserer de tunge poster (premierminister samt inden-, uden- og forsvarsminister, ‘ministries of sovereignty’) og sidder spredt i statsapparatet. Eksempler: Saudi-Arabien, Kuwait, Qatar, Bahrain og UAE.", "id": "2026E-04-DAK3-47668033"}, {"kilde": "herb", "kategori": "teori", "forside": "Herbs typologi af mellemøstlige monarkier?", "bagside": "Efter familiens rolle i regeringen:\n• Dynastisk (monopol): ingen revolution.\n• Familie tilladt, men uden monopol (Jordan, Marokko, Oman): overlevet.\n• Familie forbudt i regeringen (Egypten, Irak, Libyen, Iran, Afghanistan): alle faldet.", "id": "2026E-04-DAK3-9e28afe4"}, {"kilde": "herb", "kategori": "teori", "forside": "Herb: Nyfortolkning af ressourceforbandelsen?", "bagside": "Olie virker gennem de eksisterende institutioner. Olieindtægterne fik staten til at vokse lynhurtigt, og herskerens slægtninge erobrede de nye poster (Kuwait 1938). Olie muliggør dynastisk monarki, men giver ikke i sig selv stabilitet: Iran, Irak og Libyen faldt.", "id": "2026E-04-DAK3-ad2746c0"}, {"kilde": "herb", "kategori": "teori", "forside": "Herb: Hvilke forklaringer afvises?", "bagside": "Rentierstatsteorien (olierige monarkier faldt) og den nye uddannede middelklasse (Huntington og Halpern), fordi de overlevende monarkier har flere studerende end de faldne havde. Beduinhære, kongens dygtighed og internationalt pres vurderes også.", "id": "2026E-04-DAK3-edb8976f"}, {"kilde": "herb", "kategori": "begreb", "forside": "King's dilemma (Huntington)?", "bagside": "Monarken må åbne for politisk deltagelse for at undgå revolution, men reformer giver den nye middelklasse en platform (partier og parlament) til at vælte ham. Herb mener, at monarkier kan undslippe dilemmaet.", "id": "2026E-04-DAK3-244ae870"}, {"kilde": "herb", "kategori": "teori", "forside": "Herb: Hvorfor kan monarkier liberalisere gradvist?", "bagside": "En monark kan holde valg og stadig være monark, så legitimiteten står ikke på spil ved hvert valg. Magten kan forhandles i små, forudsigelige skridt mellem palads og parlament. Det er den monarkiske vej mod konstitutionelt monarki: reform frem for revolution.", "id": "2026E-04-DAK3-a00b87d3"}, {"kilde": "herb", "kategori": "begreb", "forside": "Neopatrimonialt (sultanistisk) regime?", "bagside": "Herskeren organiserer regimet omkring sig selv, og eliten afhænger af hans personlige gunst (fx shahens Iran). Reformer underminerer patron-klient-netværket, og når herskeren falder, kollapser regimet, fordi der mangler institutioner til at vælge en afløser.", "id": "2026E-04-DAK3-c07ca46f"}, {"kilde": "herb", "kategori": "kritik", "forside": "Herb: Løser dynastisk monarki masse- eller elitetruslen?", "bagside": "Primært eliten: Dynastisk monarki løser intern magtdeling og arvefølge (Plato: revolution begynder med splid i den herskende klasse). Masserne håndteres indirekte gennem familiens kontakter i samfundet og muligheden for liberalisering.", "id": "2026E-04-DAK3-66000456"}, {"kilde": "lange", "kategori": "argument", "forside": "Lange (2009): Hovedargument?", "bagside": "Det er ikke om, men hvordan landene blev koloniseret, der afgør den postkoloniale udvikling. Direkte styre efterlod inkluderende, bureaukratiske stater med høj infrastrukturel magt, og indirekte styre efterlod personaliserede, ekskluderende stater. Det gælder både økonomisk udvikling og demokrati.", "id": "2026E-04-DAK3-2b98b9c0"}, {"kilde": "lange", "kategori": "argument", "forside": "Lange: Mekanismen?", "bagside": "Staten som mellemled: kolonistyrets form → statstype → udvikling. ‘States determine development, and the type of state varies according to strategies of colonial rule.’", "id": "2026E-04-DAK3-5eecca75"}, {"kilde": "lange", "kategori": "begreb", "forside": "Direkte styre (Lange)?", "bagside": "‘A complete system of colonial domination in which both local and central institutions are well integrated and governed by the same authority and organizational principles.’ Formelt, lønnet bureaukrati og en ensartet kommandovej.", "id": "2026E-04-DAK3-b300e256"}, {"kilde": "lange", "kategori": "begreb", "forside": "Indirekte styre (Lange)?", "bagside": "‘Domination via collaborative relations between a dominant colonial center and several regionally based indigenous institutions.’ Kolonimagten styrer gennem lokale høvdinge efter ‘sædvane’ og personlig magt.", "id": "2026E-04-DAK3-aad72876"}, {"kilde": "lange", "kategori": "begreb", "forside": "Infrastrukturel vs. despotisk magt?", "bagside": "Infrastrukturel magt er statens evne til faktisk at trænge ind i samfundet og gennemføre politik i hele territoriet. Despotisk magt er evnen til at beslutte uden at forhandle med samfundet (Mann).", "id": "2026E-04-DAK3-e157156b"}, {"kilde": "slides", "kategori": "teori", "forside": "Hvornår bliver en koloni styret indirekte (Gerring et al.)?", "bagside": "Hvor der findes en stabil, hierarkisk og statslignende myndighedsstruktur at delegere til. Uden den må kolonimagten selv projicere autoritet, hvilket kræver bosættere og giver direkte styre.", "id": "2026E-04-DAK3-9535399b"}, {"kilde": "slides", "kategori": "begreb", "forside": "Decentraliseret despoti (Mamdani)?", "bagside": "Under indirekte styre blev høvdingene kun ansvarlige opad over for kolonimagten, ikke nedad over for folket, og regerede som lokale despoter. Eksempel: Lesotho, hvor folkeforsamlingen (pitso) døde ud under britisk beskyttelse.", "id": "2026E-04-DAK3-22111917"}, {"kilde": "lange", "kategori": "teori", "forside": "Indirekte styres tre konsekvenser?", "bagside": "1) Decentraliseret despoti, fordi ansvarligheden nedad forsvinder.\n2) Konservering, fordi magtstrukturerne fastfryses.\n3) En todelt stat med en kvasi-moderne hovedstad og traditionelle lokale forvaltninger, der skaber afstand til borgerne.", "id": "2026E-04-DAK3-69cdba0a"}, {"kilde": "lange", "kategori": "kritik", "forside": "Julian Gos kritik af Lange?", "bagside": "1) Case-udvælgelse: ca. 28 kolonier udelukkes af hensyn til ‘homogenitet’, hvilket tyder på uudtalte scope conditions.\n2) Alternative forklaringer underspilles, fx Sierra Leones diamanter og ressourceforbandelsen.\nLange indrømmer til sidst, at formen ikke er ‘the only factor’.", "id": "2026E-04-DAK3-95a31ebd"}, {"kilde": "lange", "kategori": "teori", "forside": "Lange og Hariri: Hvordan hænger argumenterne sammen?", "bagside": "Begge ser indirekte styre som skadeligt. Lange forklarer formens konsekvenser gennem staten. Hariri viser, at formen selv var endogen: Tidlig statsdannelse gjorde indirekte styre mere sandsynligt. Hariri bruger Langes mål (andelen af sædvaneretlige retssager).", "id": "2026E-04-DAK3-4b410f74"}, {"kilde": "slides", "kategori": "begreb", "forside": "Defensiv modernisering?", "bagside": "Statsstyrede reformer efter europæisk forbillede for at holde trit med Vesten, især hær og bureaukrati, men også industri og uddannelse (Muhammed Ali, Tanzimat, Meiji, Atatürk, Reza Shah). De moderniserede staten, ikke forholdet mellem stat og borgere.", "id": "2026E-04-DAK3-ae55ffa1"}, {"kilde": "slides", "kategori": "begreb", "forside": "Dismemberment vs. suffocation?", "bagside": "Dismemberment: en gruppe deles af koloniale grænser. Suffocation: forskellige grupper tvinges sammen i én stat (fx Irak = Baghdad, Basra og Mosul). Begge øger heterogeniteten (Englebert et al.).", "id": "2026E-04-DAK3-a464c5e3"}, {"kilde": "slides", "kategori": "teori", "forside": "Forklaringer på MENA's demokratiske underskud (forelæsningen)?", "bagside": "1) Ressourceforbandelsen, 2) manglende modernisering (Lipset og Kuran), 3) repressiv kapacitet (Bellin), 4) frygten for politisk islam (Lust-Okar), 5) Sykes-Picot-grænserne, 6) politiske værdier, 7) islam og kultur (Huntington). Hertil kommer Hariri: tidlige staters autokratiske arv.", "id": "2026E-04-DAK3-58df56cc"}, {"kilde": "slides", "kategori": "teori", "forside": "Frygten for politisk islam (Lust-Okar)?", "bagside": "Islamistiske bevægelser skræmmer den sekulære opposition og Vesten (‘the devil they know’), så oppositionen splittes og svækkes. Det er oppositionens svaghed, ikke statens styrke som hos Bellin, der blokerer reform.", "id": "2026E-04-DAK3-9ed43bb8"}, {"kilde": "slides", "kategori": "teori", "forside": "Ressourceforbandelsens mekanismer?", "bagside": "Staten finansieres af ressourceindtægter frem for skatter, så lederne ikke står til ansvar og mangler incitament til udviklingspolitik. Dutch disease: En stigende valutakurs skader anden eksport, fx industri, og skubber kvindejobs ud (Ross).", "id": "2026E-04-DAK3-3b68e3b8"}, {"kilde": "slides", "kategori": "argument", "forside": "Nunn (2008): Argument om slavehandlen?", "bagside": "Områder med stor slaveeksport er i dag fattigere, via etnisk og politisk fragmentering og mistillid, fordi folk blev taget af folk fra samme eller lignende grupper. Afstanden til de havne, der importerede slaver, bruges som instrument mod endogenitet.", "id": "2026E-04-DAK3-e7e248ee"}, {"kilde": "slides", "kategori": "teori", "forside": "Indigenous roots of representative democracy (Bentzen, Hariri & Robinson)?", "bagside": "Der kan være institutionel kontinuitet mellem oprindelige folks proto-demokratiske institutioner og moderne repræsentative institutioner, hvis det oprindelige samfund var relativt stærkt, og der ikke skete europæisk bosættelse i stor skala.", "id": "2026E-04-DAK3-230a3142"}, {"kilde": "hariri", "kategori": "teori", "forside": "Hariri og Herb: Hvordan forholder de sig til hinanden?", "bagside": "Hariri forklarer regionens niveau af demokrati med en strukturel og historisk forklaring på makroniveau. Herb forklarer variationen mellem monarkier med en institutionel og aktørbaseret forklaring. De kan forenes, fordi begge ser traditionelle autoritetsstrukturer som centrale. Spændingen er, at Herb ser monarki som en mulig vej til gradvis demokratisering, mens Hariri ser arven som en hindring.", "id": "2026E-04-DAK3-a8d178e5"}]}, {"kode": "EP", "navn": "Integration, disintegration og kriser", "tekster": [{"id": "hm09", "label": "Hooghe & Marks 2009"}, {"id": "hm19", "label": "Hooghe & Marks 2019"}, {"id": "jones", "label": "Jones et al. 2021"}, {"id": "slides", "label": "Forelæsning F04"}], "kort": [{"kilde": "hm09", "kategori": "argument", "forside": "Hooghe & Marks (2009): Hovedargument?", "bagside": "EU-integration er blevet politiseret i valg og folkeafstemninger. Derfor er befolkningens og partiernes præferencer afgørende, og identitet er central. ‘Permissive consensus’ er afløst af ‘constraining dissensus’, som lægger et nedadgående pres på integrationen.", "id": "2026E-04-EP-d2f92181"}, {"kilde": "hm09", "kategori": "argument", "forside": "Postfunktionalisme vs. NF/LI: kerneforskellen?", "bagside": "NF og LI ser præferencer som økonomiske og integration som distributiv forhandling mellem interessegrupper (elitepolitik). PF: Identitet og massepolitik kan bremse integration, selv når den er funktionelt ønskværdig. ‘Functional pressures are one thing, regime outcomes are another.’", "id": "2026E-04-EP-9219eacf"}, {"kilde": "hm09", "kategori": "argument", "forside": "Hvorfor ‘post’-funktionalisme?", "bagside": "Teorien er agnostisk over for, om de jurisdiktioner, der skabes, er effektive. Den deler NF's og LI's udgangspunkt (mismatch mellem funktion og autoritetsstruktur), men antager ikke, at udfaldet afspejler det funktionelle pres: ‘Political conflict makes all the difference.’", "id": "2026E-04-EP-df32995b"}, {"kilde": "hm09", "kategori": "begreb", "forside": "Tre logikker bag præferencer for jurisdiktionel arkitektur?", "bagside": "Effektivitet, distribution og identitet. Styring er både et middel til kollektive goder og et udtryk for fællesskab.", "id": "2026E-04-EP-2d4ac065"}, {"kilde": "hm09", "kategori": "begreb", "forside": "Permissive consensus vs. constraining dissensus?", "bagside": "Permissive consensus (ca. 1950'erne–1991): Befolkningen var passiv, og isolerede eliter kunne integrere. Constraining dissensus (efter Maastricht og det danske nej): Eliter må ‘look over their shoulders’ til en mere skeptisk og mobiliseret offentlighed.", "id": "2026E-04-EP-6fdf0bdb"}, {"kilde": "hm09", "kategori": "teori", "forside": "Postfunktionalismens model i fem trin?", "bagside": "1) Reform impetus (mismatch mellem funktion og form), 2) issue creation, 3) arena rules, 4) arena choice (partierne), 5) konfliktstruktur. Interessegruppearenaen giver distribution (venstre/højre), massearenaen giver identitet (GAL/TAN).", "id": "2026E-04-EP-d35b9410"}, {"kilde": "hm09", "kategori": "begreb", "forside": "GAL/TAN?", "bagside": "En ikke-økonomisk dimension: Green/Alternative/Libertarian over for Traditionalism/Authority/Nationalism. Den forklarer partiers EU-holdning bedre end venstre-højre. TAN-partier afviser integration, fordi den underminerer det nationale fællesskab.", "id": "2026E-04-EP-44de4124"}, {"kilde": "hm09", "kategori": "teori", "forside": "Hvornår giver national identitet EU-skepsis (PF)?", "bagside": "Når identiteten er eksklusiv (kun national) og aktiveres (‘cued’) af partier, især populistiske TAN-partier. En stærk, men inkluderende national identitet er forenelig med EU-støtte.", "id": "2026E-04-EP-bb472331"}, {"kilde": "hm09", "kategori": "begreb", "forside": "Priming, framing og cueing?", "bagside": "Priming: at gøre en overvejelse salient. Framing: at forbinde en overvejelse med et politisk objekt. Cueing: at indpode en bias. EU-holdninger er særligt modtagelige, fordi EU er fjernt, abstrakt og nyt.", "id": "2026E-04-EP-53f99a9f"}, {"kilde": "hm09", "kategori": "teori", "forside": "Hvorfor undgår mainstreampartierne EU-spørgsmålet?", "bagside": "Det går på tværs af venstre-højre og splitter partiet, og deres vælgere er mere skeptiske end dem selv. Partierne vejer vælgerpotentiale, ideologisk omdømme og intern enhed. Derfor rammesættes debatten af TAN-partier og den radikale venstrefløj.", "id": "2026E-04-EP-0b627820"}, {"kilde": "hm09", "kategori": "teori", "forside": "Postfunktionalismens fire forventninger om GAL/TAN?", "bagside": "1) Integration forstærker en ikke-økonomisk identitetsdimension. 2) Det er dårligt nyt for mainstreampartierne. 3) Når integrationen udvides til ikke-økonomiske områder, bliver EU-skepsis mere TAN. 4) Politiseringen er størst i lande med populistiske TAN-partier.", "id": "2026E-04-EP-82a7e261"}, {"kilde": "hm09", "kategori": "teori", "forside": "Hvordan reagerer ledere på politiseringen (PF)?", "bagside": "Mindre reformpakker for at undgå folkeafstemninger, opt-outs, differentieret integration og beslutninger flyttet til ikke-majoritære agenturer.", "id": "2026E-04-EP-28b9fd0a"}, {"kilde": "slides", "kategori": "begreb", "forside": "Cleavage?", "bagside": "‘A durable, socially rooted divide that structures conflict in a society’ (Lipset & Rokkan). Postfunktionalismen bygger på cleavage-teori.", "id": "2026E-04-EP-9242d2e4"}, {"kilde": "slides", "kategori": "teori", "forside": "Transnational cleavage (Hooghe & Marks 2018)?", "bagside": "1) Et eksogent chok skaber en fundamental konflikt (integration, immigration, handel). 2) Eksisterende partier er bundet af deres brand og alignment. 3) Nye partier opstår som svar. 4) De nye partier er socialt strukturerede.", "id": "2026E-04-EP-2361893f"}, {"kilde": "hm19", "kategori": "argument", "forside": "Hooghe & Marks (2019): Hovedargument?", "bagside": "NF, LI og PF er ikke gensidigt udelukkende ‘skoler’, men giver hver sin ‘line of sight’. Hver krise (eurokrisen, migrationskrisen, Brexit og illiberalismen) er samtidig mellemstatslig forhandling, stiafhængig spillover og ideologisk konflikt.", "id": "2026E-04-EP-62026587"}, {"kilde": "hm19", "kategori": "teori", "forside": "Neofunktionalismen i én sætning?", "bagside": "Spillover og supranational aktivisme driver integrationen. Stiafhængighed, begrænset rationalitet og sunk costs gør forløbet takket, men opadgående.", "id": "2026E-04-EP-9b380f5b"}, {"kilde": "hm19", "kategori": "teori", "forside": "Liberal intergovernmentalisme i én sætning?", "bagside": "National præferencedannelse (økonomiske interesser) → mellemstatslig forhandling (asymmetrisk afhængighed, hvor de mindst afhængige sætter vilkårene) → institutioner, der sikrer aftalerne. Typisk udfald: laveste fællesnævner.", "id": "2026E-04-EP-3ee46dff"}, {"kilde": "hm19", "kategori": "teori", "forside": "Postfunktionalismen i én sætning?", "bagside": "Mismatch → arenavalg → konfliktstruktur. Politisering af identitet i massepolitik kan bremse integrationen, og disintegration er et muligt udfald.", "id": "2026E-04-EP-b63e88c0"}, {"kilde": "hm19", "kategori": "teori", "forside": "Eurokrisen gennem de tre teorier?", "bagside": "LI: gentagne laveste-fællesnævner-aftaler præget af asymmetri mellem Nord og Syd. NF: halvbagt ØMU → utilsigtet spillover → bankunion og ECB. PF: nationalistisk pres lammede regeringerne, og krisen blev depolitiseret via ikke-majoritære institutioner.", "id": "2026E-04-EP-92d0de19"}, {"kilde": "hm19", "kategori": "teori", "forside": "Migrationskrisen gennem de tre teorier?", "bagside": "LI: De mindst berørte stater kunne blokere, og resultatet blev den laveste fællesnævner. NF: sunk costs i Schengen og Kommissionens initiativ gav mere Frontex. PF: identitetspolitik, nationalistiske partier og en kulturel kløft.", "id": "2026E-04-EP-bfb2c8f7"}, {"kilde": "hm19", "kategori": "teori", "forside": "Brexit gennem de tre teorier?", "bagside": "PF har størst forklaringskraft: Cameron ville neutralisere UKIP, identitet og immigration dominerede, og siderne mødtes aldrig. LI: Brexit er ‘illusorisk’ (Moravcsik). NF: Gensidig afhængighed og sunk costs taler imod et hårdt Brexit.", "id": "2026E-04-EP-d1820628"}, {"kilde": "hm19", "kategori": "teori", "forside": "Illiberalismen (Ungarn/Polen) gennem de tre teorier?", "bagside": "LI: Artikel 7 kræver enstemmighed minus én, så landene beskytter hinanden. NF: Kommissionens og EU-Domstolens aktivisme (krav om uafhængige domstole). PF: nationalistisk mobilisering på GAL/TAN, og EU har mest effekt, hvor der er en indenlandsk opposition at støtte.", "id": "2026E-04-EP-08a3ebe4"}, {"kilde": "jones", "kategori": "argument", "forside": "Jones, Kelemen & Meunier (2021): Hovedargument?", "bagside": "Failing forward: Laveste-fællesnævner-aftaler skaber ufuldstændige institutioner, der sår kimen til nye kriser. Kriserne presser til nye, stadig ufuldstændige reformer, som over tid uddyber integrationen.", "id": "2026E-04-EP-2fdb885d"}, {"kilde": "jones", "kategori": "argument", "forside": "Failing forward: Gåden?", "bagside": "Under eurokrisen vedtog lederne minimale nødløsninger, som de vidste var uholdbare, men over tid bevægede de EU mod dybere integration.", "id": "2026E-04-EP-26917411"}, {"kilde": "jones", "kategori": "argument", "forside": "Failing forward: Teorikombinationen?", "bagside": "Kort sigt: LI, hvor mellemstatslige forhandlinger giver ufuldstændige løsninger. Lang sigt: NF, hvor spillover og supranational aktivisme uddyber integrationen. Teorierne virker i tandem, i forskelligt tempo.", "id": "2026E-04-EP-b5b6158b"}, {"kilde": "jones", "kategori": "teori", "forside": "Failing forward: Tre scope conditions?", "bagside": "1) Kriseintensitet: omfattende, ukendt (Knightian usikkerhed) og eksistentiel.\n2) Supranational kompetence: mest sandsynligt ved delt kompetence i midten af spektret.\n3) Omkostningen ved at gå tilbage (lock-in).", "id": "2026E-04-EP-3728fa75"}, {"kilde": "jones", "kategori": "begreb", "forside": "‘Forward’ hos Jones et al.?", "bagside": "Dybere integration: koordinering, overførsel af autoritet til EU og styrkelse af EU i eksisterende kompetencer. Begrebet er hverken teleologisk eller normativt: ‘moving forward does not mean it is getting better’.", "id": "2026E-04-EP-50561c81"}, {"kilde": "jones", "kategori": "begreb", "forside": "Lock-in (omkostningen ved at gå tilbage)?", "bagside": "Jo dyrere det er at afvikle en EU-ordning, jo mere sandsynligt giver man den mere autoritet i en krise, som bilisten, der er strandet midt i krydset. Eksempel: Grækenland og Cypern valgte kapitalkontrol frem for at forlade euroen.", "id": "2026E-04-EP-38e837d6"}, {"kilde": "jones", "kategori": "kritik", "forside": "Failing forward: Legitimitetsproblemet?", "bagside": "Krisedrevet integration kan få EU til at virke ‘rudderless and in a perpetual state of crisis’ og kan omdanne permissive consensus til constraining dissensus. Mønstret kan derfor være selvundergravende.", "id": "2026E-04-EP-ae28dc58"}, {"kilde": "jones", "kategori": "kritik", "forside": "‘Failing to fail forward’ (retsstatskrisen)?", "bagside": "Emmons & Pavone: Modstandere brugte ‘rhetorics of inaction’ til at undgå at bruge EU's værktøjer. Agency kan blokere dynamikken trods funktionelt pres.", "id": "2026E-04-EP-a671af7a"}]}, {"kode": "PA", "navn": "Issue mobilisation", "tekster": [{"id": "berkhout", "label": "Berkhout 2013"}, {"id": "crepaz", "label": "Crepaz et al. 2022, kap. 3"}, {"id": "fraussen", "label": "Fraussen et al. 2021"}, {"id": "stevens", "label": "Stevens 2026"}], "kort": [{"kilde": "berkhout", "kategori": "argument", "forside": "Berkhout (2013): Hovedargument?", "bagside": "Interesseorganisationers adfærd formes af tre samtidige og indbyrdes afhængige udvekslinger: med støtter (support), beslutningstagere (influence) og medier (reputation). Kravene modsiger ofte hinanden, så organisationerne er strategisk begrænsede, ikke autonome.", "id": "2026E-04-PA-80108e33"}, {"kilde": "berkhout", "kategori": "argument", "forside": "Berkhout vs. Salisbury?", "bagside": "Salisbury (1969) ser på udvekslingen mellem entreprenør og medlemmer ved gruppedannelse. Berkhout tilføjer beslutningstagere og medier og insisterer på, at relationerne er gensidigt afhængige. Han omdøber ‘logic of membership’ til ‘logic of support’.", "id": "2026E-04-PA-ba207d2a"}, {"kilde": "berkhout", "kategori": "begreb", "forside": "Udveksling og ressource (exchange-teori)?", "bagside": "Udveksling: interaktion, der er frivillig, gensidig og til fælles fordel. Ressource: en evne, besiddelse eller egenskab, der giver kapacitet til at belønne eller straffe en bestemt aktør. Ressourcer er relationelle.", "id": "2026E-04-PA-fb5b8df2"}, {"kilde": "berkhout", "kategori": "teori", "forside": "Berkhouts Tabel 1 i korte træk?", "bagside": "Støtter: organisationen får compliance, offentlig handling og synlighed og giver kontrol og synlighed.\nBeslutningstagere: den giver støtternes disciplin og acceptable frames og får privilegier, gunstig politik og information.\nMedier: den giver events, drama og nyhedsinput og får latent støtte, validering og issue expansion.", "id": "2026E-04-PA-77313561"}, {"kilde": "berkhout", "kategori": "teori", "forside": "Kollmans typologi (popularitet × salience)?", "bagside": "Høj popularitet og høj salience: comforting politics.\nHøj popularitet og lav salience: latent support politics (øg saliencen via medierne).\nLav popularitet og høj salience: klassisk interessegruppepolitik (undgå at udvide konflikten).\nLav popularitet og lav salience: elitist politics.", "id": "2026E-04-PA-cfbf7a35"}, {"kilde": "berkhout", "kategori": "teori", "forside": "Berkhout: Tæthed (density) i interessegruppemiljøet?", "bagside": "I tætte miljøer har lederne mindre kontrol over støtterne, og støtten er mindre værd over for beslutningstagerne, som helst forhandler med én bred organisation. Grupperne specialiserer sig i nicher.", "id": "2026E-04-PA-c1a00f9c"}, {"kilde": "crepaz", "kategori": "argument", "forside": "Crepaz et al. (2022), kap. 3: Hovedargument?", "bagside": "Issue mobilisation drives af affectedness (Truman) og ressourcer (Olson). Berørte og ressourcestærke grupper mobiliserer oftere, hurtigere og mere intenst. NGO'er mobiliserer, men langsommere og mindre intenst. Interne problemer hæmmer ikke.", "id": "2026E-04-PA-d99c871c"}, {"kilde": "crepaz", "kategori": "begreb", "forside": "Issue mobilisation?", "bagside": "‘The decision of individual organisations to mobilise on concrete policy issues’, altså når eksisterende organisationer aktiverer deres politiske funktion. Det er andet trin, forskelligt fra gruppedannelse og medlemsmobilisering.", "id": "2026E-04-PA-d834d1bd"}, {"kilde": "crepaz", "kategori": "begreb", "forside": "Tre dimensioner af issue mobilisation?", "bagside": "Succes (om), tempo (hvor hurtigt) og intensitet (hvor meget).", "id": "2026E-04-PA-8c32954c"}, {"kilde": "crepaz", "kategori": "teori", "forside": "Crepaz et al.: Fire hypoteser?", "bagside": "H1 affectedness (Truman: ‘disturbances’). H2 grupptype, hvor erhvervsgrupper har en fordel (Olson). H3 ressourcer (Olson, by-product). H4 interne problemer hæmmer (Bolleyer og Berkhout: forskellige logikker for medlemsservice og politik).", "id": "2026E-04-PA-f5c07987"}, {"kilde": "crepaz", "kategori": "kritik", "forside": "Crepaz et al.: Normativ vurdering?", "bagside": "Positivt: Systemet hælder mod de mest berørte efter en focusing event, hvilket giver bedre informeret politik. Negativt: Ressourceulighed og langsomme diffuse interesser skaber bias tidligt i influence production-processen.", "id": "2026E-04-PA-f59069f9"}, {"kilde": "fraussen", "kategori": "argument", "forside": "Fraussen et al. (2021): Hovedargument?", "bagside": "Grupper prioriterer issues ved at balancere fem drivere. Driverne er positivt korrelerede og forenelige, ikke en trade-off. Deres relative vægt afhænger af organisatoriske træk: generalist, insider, medlemsinvolvering og konkurrence.", "id": "2026E-04-PA-6e159bcc"}, {"kilde": "fraussen", "kategori": "begreb", "forside": "Fem drivere for issue prioritization?", "bagside": "Internt: intern responsivitet og policy capacity. Eksternt: niche seeking, political opportunity structure (POS) og issue salience.", "id": "2026E-04-PA-5eea4249"}, {"kilde": "fraussen", "kategori": "teori", "forside": "Fraussen et al.: Hvem vægter hvad?", "bagside": "Generalister vægter salience og (uventet) intern responsivitet. Insidere vægter POS og niche. Høj medlemsinvolvering giver mere intern responsivitet. Konkurrence om medlemmer giver mere niche.", "id": "2026E-04-PA-ff773297"}, {"kilde": "fraussen", "kategori": "begreb", "forside": "Niche vs. bandwagon?", "bagside": "Niche: at specialisere sig i issues, som andre ikke arbejder på, for at skille sig ud. Bandwagon: at gå med på issues, der allerede får meget opmærksomhed. De fleste issues får lidt opmærksomhed, mens få får meget (Baumgartner & Leech; Halpin).", "id": "2026E-04-PA-03c656cc"}, {"kilde": "stevens", "kategori": "argument", "forside": "Stevens (2026): Hovedargument?", "bagside": "Kun grupper med anticipatory capacity kan blokere nightmare issues proaktivt, før rivaler mobiliserer. Kapaciteten styrkes af ressourcer, professionalisering og outsourcing. Det skaber et ‘timing gap’, der skævvrider repræsentationen i dagsordenens tidligste fase.", "id": "2026E-04-PA-761a8a96"}, {"kilde": "stevens", "kategori": "argument", "forside": "Stevens: Hvorfor er timing capacity-driven?", "bagside": "Man kan ikke blokere en trussel, man ikke har opdaget. I positiv agenda-setting tager gruppen selv initiativet, mens negativ agenda-setting kræver tidlig opdagelse. Grupper uden kapacitet er strukturelt henvist til at reagere.", "id": "2026E-04-PA-c51939a8"}, {"kilde": "stevens", "kategori": "begreb", "forside": "Nightmare issue?", "bagside": "En højst konsekvensrig trussel mod status quo, som gruppen opfatter som særligt skadelig og salient for medlemmerne, og som endnu ikke er på den formelle dagsorden. Gruppen vil holde den af dagsordenen.", "id": "2026E-04-PA-e7672a3a"}, {"kilde": "stevens", "kategori": "begreb", "forside": "Proaktiv vs. reaktiv negativ agenda-setting?", "bagside": "Proaktiv: gruppen handler, før rivaliserende aktører har mobiliseret (risikostyring). Reaktiv: efter rivaler har rejst sagen, men før den er på den formelle dagsorden.", "id": "2026E-04-PA-81deed18"}, {"kilde": "stevens", "kategori": "begreb", "forside": "Anticipatory capacity?", "bagside": "En organisations evne til at forudse nightmare issues ved at opfange og fortolke svage signaler om nye trusler. Begrebet er inspireret af anticipatory governance og handler om at genkende risici, ikke om selve handlingen.", "id": "2026E-04-PA-8cfdeff6"}, {"kilde": "stevens", "kategori": "begreb", "forside": "Magtens tre ansigter?", "bagside": "1. ansigt: synlige beslutninger. 2. ansigt (Bachrach & Baratz): hvad der kommer på dagsordenen, her proaktiv og reaktiv negativ agenda-setting. 3. ansigt (Lukes): at forme, hvad folk overhovedet anser for muligt eller legitimt.", "id": "2026E-04-PA-3ddd697c"}, {"kilde": "stevens", "kategori": "teori", "forside": "Stevens: Samspillet mellem stab og professionalisering?", "bagside": "Flere ansatte øger kun proaktiviteten i professionaliserede grupper, hvor staben har autoritet. I medlemsstyrede grupper mangler staben mandat til at handle på tidlige signaler.", "id": "2026E-04-PA-39334520"}, {"kilde": "crepaz", "kategori": "teori", "forside": "Ugens PA-tekster i influence production-processen?", "bagside": "Berkhout: rammen med tre udvekslinger. Crepaz: om og hvor meget der mobiliseres. Fraussen: hvilke issues der prioriteres. Stevens: hvornår, proaktivt mod trusler. Fællestræk: Ressourcer skaber bias allerede i mobiliseringsfasen.", "id": "2026E-04-PA-a160c74f"}]}]}]};
+
+// ---------- persistence ----------
+const KEY = "kort:" + DATA.semester;
+let mem = {};
+function load(){ try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch(e){ return mem; } }
+function save(){ mem = S; try { localStorage.setItem(KEY, JSON.stringify(S)); } catch(e){} }
+let S = Object.assign({c:{}, nye:"15", kursus:"alle", fokus:"alt", dag:"", nyeIdag:0}, load());
+
+// ---------- helpers ----------
+const $ = (tag, attrs={}, ...kids) => {
+  const el = document.createElement(tag);
+  for (const [k,v] of Object.entries(attrs)) {
+    if (k === "class") el.className = v;
+    else if (k.startsWith("on")) el.addEventListener(k.slice(2), v);
+    else if (v !== false && v != null) el.setAttribute(k, v === true ? "" : v);
+  }
+  for (const kid of kids.flat(Infinity)) if (kid != null && kid !== false) el.append(kid.nodeType ? kid : document.createTextNode(kid));
+  return el;
+};
+const clean = kids => kids.flat(Infinity).filter(k => k != null && k !== false);
+const app = document.getElementById("app"), foot = document.getElementById("foot"), footin = document.getElementById("footin");
+function setFoot(...b){ b = clean(b); footin.replaceChildren(...b); foot.hidden = !b.length; }
+function screen(...k){ app.replaceChildren(...clean(k)); window.scrollTo(0,0); }
+const shuffle = a => { a = a.slice(); for (let i = a.length-1; i > 0; i--) { const j = Math.floor(Math.random()*(i+1)); [a[i],a[j]] = [a[j],a[i]]; } return a; };
+const DAY = 864e5;
+const today0 = () => { const d = new Date(); d.setHours(0,0,0,0); return d.getTime(); };
+const isoDay = () => new Date(today0() + 12*36e5).toISOString().slice(0,10);
+const KAT = {argument:"Hovedargument", begreb:"Begreb", teori:"Teori & model", kritik:"Kritik & vurdering"};
+const KAT_ORDER = {argument:0, begreb:1, teori:2, kritik:3};
+
+// ---------- cards ----------
+const CARDS = [], COURSES = [];
+for (const u of DATA.uger) for (const k of u.kurser) {
+  if (!COURSES.includes(k.kode)) COURSES.push(k.kode);
+  const labels = Object.fromEntries(k.tekster.map(t => [t.id, t.label]));
+  k.kort.forEach((c, n) => CARDS.push(Object.assign({kursus:k.kode, uge:u.uge, tekst: labels[c.kilde] || c.kilde, n}, c)));
+}
+function filtered(){
+  return CARDS.filter(c => (S.kursus === "alle" || c.kursus === S.kursus) &&
+    (S.fokus === "alt" || (S.fokus === "argument" ? c.kategori === "argument" : c.kategori !== "argument")));
+}
+function newOrder(a, b){
+  // Oldest week first; within a week main arguments first, interleaved across courses.
+  return a.uge - b.uge || (KAT_ORDER[a.kategori] ?? 9) - (KAT_ORDER[b.kategori] ?? 9) ||
+    a.n - b.n || COURSES.indexOf(a.kursus) - COURSES.indexOf(b.kursus);
+}
+function rollDay(){ const d = isoDay(); if (S.dag !== d) { S.dag = d; S.nyeIdag = 0; save(); } }
+function counts(){
+  rollDay();
+  const f = filtered(), now = Date.now();
+  const due = f.filter(c => S.c[c.id] && S.c[c.id].d <= now);
+  const fresh = f.filter(c => !S.c[c.id]).sort(newOrder);
+  const cap = S.nye === "alle" ? Infinity : Math.max(0, +S.nye - S.nyeIdag);
+  return {f, due, fresh, newToday: fresh.slice(0, cap)};
+}
+
+// ---------- scheduling (SM-2 light) ----------
+function next(st, g){
+  st = Object.assign({r:0, i:0, e:2.5}, st);
+  if (g === 0) return {r:0, i:0, e:Math.max(1.3, st.e - .2), d: Date.now() + 10*6e4};
+  let i;
+  if (g === 1) { i = st.r === 0 ? 1 : Math.max(1, Math.round(st.i * 1.2)); st.e = Math.max(1.3, st.e - .15); }
+  if (g === 2) i = st.r === 0 ? 1 : st.r === 1 ? 3 : Math.round(st.i * st.e);
+  if (g === 3) { i = st.r === 0 ? 3 : st.r === 1 ? 6 : Math.round(st.i * st.e * 1.3); st.e += .15; }
+  if (g >= 2 && st.r >= 1 && i <= st.i) i = st.i + 1;
+  return {r: st.r + 1, i, e: st.e, d: today0() + i*DAY};
+}
+const fmt = st => st.i === 0 ? "10 min" : st.i === 1 ? "1 dag" : st.i < 31 ? st.i + " dage" : Math.round(st.i/30) + " mdr";
+
+// ---------- home ----------
+function home(){
+  const {f, due, fresh, newToday} = counts();
+  const learned = f.filter(c => S.c[c.id]).length;
+  const seg = (label, key, opts) => [$("div", {class:"lbl"}, label), $("div", {class:"seg"},
+    opts.map(([v,l]) => $("button", {class: S[key]===v ? "on" : "", onclick(){ S[key]=v; save(); home(); }}, l)))];
+  const weeks = [...new Set(CARDS.map(c => c.uge))].sort((a,b) => a-b);
+  screen(
+    $("h1", {}, "Flashcards"),
+    $("div", {class:"sub"}, "Hele semesteret · uge " + weeks.join(", ") + " · " + CARDS.length + " kort"),
+    $("div", {class:"card"},
+      $("div", {class:"stats"},
+        $("div", {class:"stat"}, $("b", {}, due.length), $("span", {}, "til gentagelse")),
+        $("div", {class:"stat"}, $("b", {}, newToday.length), $("span", {}, "nye i dag")),
+        $("div", {class:"stat"}, $("b", {}, learned + "/" + f.length), $("span", {}, "påbegyndt"))),
+      $("button", {class:"btn", disabled: !(due.length + newToday.length), onclick: review},
+        due.length + newToday.length ? "Start gennemgang (" + (due.length + newToday.length) + ")" : "Færdig for i dag 🎉"),
+      $("div", {style:"height:10px"}),
+      $("button", {class:"btn ghost", onclick: cram}, "Terp alle " + f.length + " kort (påvirker ikke planen)")),
+    $("div", {class:"card"},
+      seg("Kursus", "kursus", [["alle","Alle"], ...COURSES.map(k => [k,k])]),
+      seg("Fokus", "fokus", [["alt","Alt"],["argument","Hovedargumenter"],["begreber","Begreber & teori"]]),
+      seg("Nye kort pr. dag", "nye", [["10","10"],["15","15"],["30","30"],["alle","Alle"]])),
+    $("div", {style:"text-align:center"},
+      $("button", {class:"link", onclick: browse}, "Se alle kort som liste"), " ",
+      $("button", {class:"link", onclick: transfer}, "Flyt fremskridt"), " ",
+      $("a", {class:"link", href:"./"}, "Quizzer"))
+  );
+  setFoot();
+}
+
+// ---------- review ----------
+let R = null;
+function review(){
+  const {due, newToday} = counts();
+  const queue = shuffle(due).concat(newToday);
+  R = {queue, done:0, total: queue.length, cram:false};
+  show();
+}
+function cram(){
+  const f = filtered();
+  if (!f.length) return;
+  R = {queue: shuffle(f), done:0, total: f.length, cram:true};
+  show();
+}
+function show(){
+  if (!R.queue.length) return finish();
+  const c = R.queue[0];
+  let open = false;
+  const back = $("div", {class:"back", hidden:true}, c.bagside);
+  const hint = $("div", {class:"hint"}, "Tryk for at vende kortet");
+  const flip = () => {
+    if (open) return; open = true; back.hidden = false; hint.remove();
+    if (R.cram) {
+      setFoot($("button", {class:"grade g0", onclick(){ grade(c, 0); }}, "Igen"),
+              $("button", {class:"grade g2", onclick(){ grade(c, 2); }}, "Kunne"));
+    } else {
+      const st = S.c[c.id];
+      setFoot([0,1,2,3].map(g => $("button", {class:"grade g" + g, onclick(){ grade(c, g); }},
+        ["Igen","Svært","Godt","Let"][g], $("small", {}, fmt(next(st, g))))));
+    }
+  };
+  R.key = e => {
+    if (!open && (e.key === " " || e.key === "Enter")) { e.preventDefault(); flip(); }
+    else if (open && "1234".includes(e.key)) { const g = +e.key - 1; if (!R.cram || g === 0 || g === 1) grade(c, R.cram ? (g ? 2 : 0) : g); }
+  };
+  screen(
+    $("div", {class:"row spread", style:"flex-wrap:nowrap"},
+      $("div", {class:"row", style:"flex:1;min-width:0"},
+        $("span", {class:"chip acc"}, c.kursus),
+        $("span", {class:"chip" + (c.kategori === "argument" ? " arg" : "")}, KAT[c.kategori] || ""),
+        $("span", {class:"chip"}, c.tekst + " · uge " + c.uge),
+        R.cram ? $("span", {class:"chip"}, "terp") : null, !R.cram && !S.c[c.id] ? $("span", {class:"chip"}, "ny") : null),
+      $("button", {class:"x", "aria-label":"Afslut", onclick(){ R = null; home(); }}, "×")),
+    $("div", {class:"bar"}, $("i", {style:"width:" + (R.done / (R.done + R.queue.length) * 100) + "%"})),
+    $("div", {class:"flash", onclick: flip}, $("div", {class:"front"}, c.forside), back, hint)
+  );
+  setFoot($("button", {class:"btn", onclick: flip}, "Vis bagside"));
+}
+function grade(c, g){
+  R.queue.shift();
+  if (!R.cram) {
+    if (!S.c[c.id]) S.nyeIdag++;
+    S.c[c.id] = next(S.c[c.id], g); save();
+  }
+  if (g === 0) R.queue.splice(Math.min(3, R.queue.length), 0, c); else R.done++;
+  show();
+}
+function finish(){
+  const wasCram = R.cram; R = null;
+  const tomorrow = CARDS.filter(c => S.c[c.id] && S.c[c.id].d <= today0() + DAY).length;
+  screen($("h1", {}, wasCram ? "Terp færdig" : "Færdig for nu"),
+    $("div", {class:"card"}, $("div", {class:"sub"}, wasCram ? "Alle kort gennemgået." : "I morgen venter " + tomorrow + " kort til gentagelse (plus nye).")));
+  setFoot($("button", {class:"btn", onclick: home}, "Forside"));
+}
+
+// ---------- browse / transfer ----------
+function browse(){
+  const out = [$("div", {class:"row spread"}, $("h1", {}, "Alle kort"), $("button", {class:"x", onclick: home}, "×"))];
+  let lastK, lastT;
+  const byPlace = (a, b) => a.uge - b.uge || COURSES.indexOf(a.kursus) - COURSES.indexOf(b.kursus) || a.n - b.n;
+  for (const c of filtered().slice().sort(byPlace)) {
+    if (c.kursus + c.uge !== lastK) { lastK = c.kursus + c.uge; lastT = null; out.push($("h2", {style:"margin-top:18px"}, c.kursus + " · uge " + c.uge)); }
+    if (c.tekst !== lastT) { lastT = c.tekst; out.push($("h3", {}, c.tekst)); }
+    out.push($("div", {class:"li"}, $("b", {}, c.forside), $("div", {}, c.bagside)));
+  }
+  screen(out); setFoot($("button", {class:"btn ghost", onclick: home}, "Tilbage"));
+}
+function transfer(){
+  const code = btoa(unescape(encodeURIComponent(JSON.stringify(S.c))));
+  const inp = prompt("Kopiér koden til din anden enhed – eller indsæt en kode herfra for at hente fremskridt:", code);
+  if (inp && inp !== code) {
+    try { S.c = JSON.parse(decodeURIComponent(escape(atob(inp.trim())))); save(); alert("Fremskridt hentet."); }
+    catch(e){ alert("Koden kunne ikke læses."); }
+  }
+  home();
+}
+
+document.addEventListener("keydown", e => { if (R && R.key && !e.metaKey && !e.ctrlKey) R.key(e); });
+home();
+</script>
+</body>
+</html>
